@@ -1,0 +1,55 @@
+name: 'Build Godot Project'
+description: 'Builds a Godot project for multiple platforms and creates a GitHub release with the exported builds attached.'
+
+
+inputs:
+  godot_project_name:
+    description: 'Name of the project'
+    required: true
+    default: 'GodotProject'
+  upload_release:
+    description: 'Create new Release'
+    required: true
+    default: 'GodotProject'
+  godot_build_config:
+    description: 'Create new Release'
+    required: true
+    default: 'Linux'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build 
+      id: build_godot
+      uses: bbrieber/godot_ci_image@db6a99b04e1c60617cf81d9ea50a733721737abe
+      with:
+        build-config: ${{ godot_build_config }}
+    - name: Zip Folder
+      id: zip_folder
+      if: ${{ env.ExportLinux }}
+      run: |
+        cd export/linux
+        zip -r ${{ env.GodotProjectName }}_linux.zip .
+        cd ../..
+    - name: Create Release
+      id: create_release
+      if: ${{ upload_release }}
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset Linux
+      id: upload-release-asset-linux
+      if: ${{ upload_release }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: export/linux/${{ env.GodotProjectName }}_linux.zip
+        asset_name: ${{ env.GodotProjectName }}_linux-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
