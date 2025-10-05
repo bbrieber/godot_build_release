@@ -19,6 +19,9 @@ inputs:
     description: 'Create new Release'
     required: true
     default: 'Linux'
+  upload_url:
+    description: 'Create new Release'
+    required: true
 
 runs:
   using: "composite"
@@ -37,17 +40,17 @@ runs:
         cd export/${{ inputs.godot_build_config }}
         zip -r ${{ inputs.godot_project_name }}_${{ inputs.godot_build_config }}.zip .
         cd ../..
-    - name: Create Release
-      id: create_release
-      if: ${{ inputs.upload_release }}
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ inputs.github_token }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+#    - name: Create Release
+#      id: create_release
+#      if: ${{ inputs.upload_release }}
+##      uses: actions/create-release@v1
+ #     env:
+ #       GITHUB_TOKEN: ${{ inputs.github_token }} # This token is provided by Actions, you do not need to create your own token
+ #     with:
+ #       tag_name: ${{ github.ref }}
+ #       release_name: Release ${{ github.ref }}
+ #       draft: false
+ #       prerelease: false
     - name: Upload Release Asset Linux
       id: upload-release-asset-linux
       if: ${{ inputs.upload_release }}
@@ -55,7 +58,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ inputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         asset_path: export/${{ inputs.godot_build_config }}/${{ inputs.godot_project_name }}_${{ inputs.godot_build_config }}.zip
         asset_name: ${{ inputs.godot_project_name }}_${{ inputs.godot_build_config }}-${{ github.ref_name }}.zip
         asset_content_type: application/zip
