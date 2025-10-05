@@ -23,8 +23,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-#    - name: Checkout code
-#      uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
     - name: Build 
       id: build_godot
       uses: bbrieber/godot_ci_image@4b5ceb6e43d03f32d16707b259a0dcb474a7c95c
@@ -37,25 +37,25 @@ runs:
         cd export/${{ inputs.godot_build_config }}
         zip -r ${{ inputs.godot_project_name }}_${{ inputs.godot_build_config }}.zip .
         cd ../..
-#   - name: Create Release
-#      id: create_release
-#      if: ${{ inputs.upload_release }}
-#      uses: actions/create-release@v1
-#      env:
-#        GITHUB_TOKEN: ${{ inputs.github_token }} # This token is provided by Actions, you do not need to create your own token
-#      with:
-#        tag_name: ${{ github.ref }}
-#        release_name: Release ${{ github.ref }}
-#        draft: false
-#        prerelease: false
-#    - name: Upload Release Asset Linux
-#      id: upload-release-asset-linux
-#      if: ${{ inputs.upload_release }}
-#      uses: actions/upload-release-asset@v1
-#      env:
-#        GITHUB_TOKEN: ${{ inputs.github_token }}
-#      with:
-#        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-#        asset_path: export/${{ inputs.godot_build_config }}/${{ inputs.godot_project_name }}_${{ inputs.godot_build_config }}.zip
-#        asset_name: ${{ inputs.godot_project_name }}_${{ inputs.godot_build_config }}-${{ github.ref_name }}.zip
-#        asset_content_type: application/zip
+    - name: Create Release
+      id: create_release
+      if: ${{ inputs.upload_release }}
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset Linux
+      id: upload-release-asset-linux
+      if: ${{ inputs.upload_release }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: export/${{ inputs.godot_build_config }}/${{ inputs.godot_project_name }}_${{ inputs.godot_build_config }}.zip
+        asset_name: ${{ inputs.godot_project_name }}_${{ inputs.godot_build_config }}-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
