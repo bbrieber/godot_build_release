@@ -26,8 +26,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+#    - name: Checkout code
+#      uses: actions/checkout@v2
     - name: Build 
       id: build_godot
       uses: bbrieber/godot_ci_image@4b5ceb6e43d03f32d16707b259a0dcb474a7c95c
