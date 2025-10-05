@@ -27,7 +27,7 @@ runs:
       uses: actions/checkout@v2
     - name: Build 
       id: build_godot
-      uses: bbrieber/godot_ci_image@505eb81cc0179251b7b8aad1ae20e7db83eefbaf
+      uses: bbrieber/godot_ci_image@12737e9a7702a407b8c5dcf55ad84a753d2d7453
       with:
         build-config: ${{ inputs.godot_build_config }}
     - name: Zip Folder
